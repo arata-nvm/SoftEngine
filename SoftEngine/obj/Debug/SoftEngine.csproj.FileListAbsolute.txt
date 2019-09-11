@@ -19,3 +19,7 @@ C:\Users\User01\RiderProjects\SoftEngine\SoftEngine\obj\Debug\SoftEngine.pdb
 C:\Users\User01\RiderProjects\SoftEngine\SoftEngine\bin\Debug\SharpDX.Mathematics.dll
 C:\Users\User01\RiderProjects\SoftEngine\SoftEngine\bin\Debug\SharpDX.Mathematics.pdb
 C:\Users\User01\RiderProjects\SoftEngine\SoftEngine\bin\Debug\SharpDX.Mathematics.xml
+C:\Users\User01\RiderProjects\SoftEngine\SoftEngine\bin\Debug\Newtonsoft.Json.dll
+C:\Users\User01\RiderProjects\SoftEngine\SoftEngine\bin\Debug\Newtonsoft.Json.xml
+C:\Users\User01\RiderProjects\SoftEngine\SoftEngine\obj\Debug\SoftEngine_Content.g.cs
+C:\Users\User01\RiderProjects\SoftEngine\SoftEngine\bin\Debug\monkey.babylon
