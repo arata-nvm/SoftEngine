@@ -2,19 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="96a3d42a-e6da-41d1-9d22-fc7cbdd4e844" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/SoftEngine/ScanLineData.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SoftEngine/Vertex.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.SoftEngine/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.SoftEngine/.idea/contentModel.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.SoftEngine/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.SoftEngine/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SoftEngine/Device.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/Device.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SoftEngine/Mesh.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/Mesh.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SoftEngine/SoftEngine.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/SoftEngine.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SoftEngine/bin/Debug/SoftEngine.exe" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/bin/Debug/SoftEngine.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SoftEngine/bin/Debug/SoftEngine.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/bin/Debug/SoftEngine.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine.csproj.CoreCompileInputs.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine.exe" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine_MarkupCompile.cache" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine_MarkupCompile.cache" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -128,7 +121,7 @@
       <option name="presentableId" value="Default" />
       <updated>1568160150266</updated>
       <workItem from="1568160154343" duration="2955000" />
-      <workItem from="1568165540460" duration="24808000" />
+      <workItem from="1568165540460" duration="25855000" />
     </task>
     <servers />
   </component>

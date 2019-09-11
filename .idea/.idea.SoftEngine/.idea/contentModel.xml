@@ -26,6 +26,7 @@
         </e>
         <e p="ScanLineData.cs" t="Include" />
         <e p="SoftEngine.csproj" t="IncludeRecursive" />
+        <e p="torus.babylon" t="Include" />
         <e p="Vertex.cs" t="Include" />
       </e>
       <e p="SoftEngine.sln" t="IncludeFlat" />

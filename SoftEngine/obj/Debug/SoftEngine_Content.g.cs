@@ -9,5 +9,6 @@
 //------------------------------------------------------------------------------
 
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("monkey.babylon")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("torus.babylon")]
 
 
