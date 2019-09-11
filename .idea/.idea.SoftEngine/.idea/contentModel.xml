@@ -24,7 +24,9 @@
           <e p="Resources.Designer.cs" t="Include" />
           <e p="Resources.resx" t="Include" />
         </e>
+        <e p="ScanLineData.cs" t="Include" />
         <e p="SoftEngine.csproj" t="IncludeRecursive" />
+        <e p="Vertex.cs" t="Include" />
       </e>
       <e p="SoftEngine.sln" t="IncludeFlat" />
     </e>

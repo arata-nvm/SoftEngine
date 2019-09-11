@@ -67,7 +67,7 @@ namespace SoftEngine
                 }
 
                 depthBuffer[index] = z;
-            
+                
                 backBuffer[index4] = (byte) (color.Blue * 255);
                 backBuffer[index4 + 1] = (byte) (color.Green * 255);
                 backBuffer[index4 + 2] = (byte) (color.Red * 255);
@@ -75,12 +75,20 @@ namespace SoftEngine
             }
         }
 
-        public Vector3 Project(Vector3 coord, Matrix transMat)
+        public Vertex Project(Vertex vertex, Matrix transMat, Matrix world)
         {
-            var point = Vector3.TransformCoordinate(coord, transMat);
-            var x = point.X * renderWidth + renderWidth / 2.0f;
-            var y = -point.Y * renderHeight + renderHeight / 2.0f;
-            return new Vector3(x, y, point.Z);
+            var point2d = Vector3.TransformCoordinate(vertex.Coordinates, transMat);
+            var point3dWorld = Vector3.TransformCoordinate(vertex.Coordinates, world);
+            var normal3dWorld = Vector3.TransformCoordinate(vertex.Normal, world);
+            
+            var x = point2d.X * renderWidth + renderWidth / 2.0f;
+            var y = point2d.Y * renderHeight + renderHeight / 2.0f;
+            return new Vertex
+            {
+                Coordinates =  new Vector3(x, y, point2d.Z),
+                Normal = normal3dWorld,
+                WorldCoordinates = point3dWorld
+            };
         }
 
         public void DrawPoint(Vector3 point, Color4 color)
@@ -90,73 +98,40 @@ namespace SoftEngine
                 PutPixel((int) point.X, (int) point.Y, point.Z, color);
             }
         }
-        
-/*        public void DrawLine(Vector2 point0, Vector2 point1, Color4 color)
+
+        public void DrawTriangle(Vertex v1, Vertex v2, Vertex v3, Color4 color)
         {
-            var dist = (point1 - point0).Length();
-
-            if (dist < 2) return;
-
-            Vector2 middlePoint = point0 + (point1 - point0) / 2;
-            DrawPoint(middlePoint, color);
-            DrawLine(point0, middlePoint, color);
-            DrawLine(middlePoint, point1, color);
-        }
-
-        public void DrawBline(Vector2 point0, Vector2 point1, Color4 color)
-        {
-            int x0 = (int) point0.X;
-            int y0 = (int) point0.Y;
-            int x1 = (int) point1.X;
-            int y1 = (int) point1.Y;
-
-            var dx = Math.Abs(x1 - x0);
-            var dy = Math.Abs(y1 - y0);
-            var sx = (x0 < x1) ? 1 : -1;
-            var sy = (y0 < y1) ? 1 : -1;
-            var err = dx - dy;
-
-            while (true)
+            if (v1.Coordinates.Y > v2.Coordinates.Y)
             {
-                DrawPoint(new Vector2(x0, y0), color);
-                if ((x0 == x1) && (y0 == y1)) break;
-                var e2 = 2 * err;
-                if (e2 > -dx)
-                {
-                    err -= dy;
-                    x0 += sx;
-                }
-                if (e2 < dx)
-                {
-                    err += dx;
-                    y0 += sy;
-                }
-            }
-        }
-*/
-
-        public void DrawTriangle(Vector3 p1, Vector3 p2, Vector3 p3, Color4 color)
-        {
-            if (p1.Y > p2.Y)
-            {
-                var temp = p2;
-                p2 = p1;
-                p1 = temp;
+                var temp = v2;
+                v2 = v1;
+                v1 = temp;
             }
 
-            if (p2.Y > p3.Y)
+            if (v2.Coordinates.Y > v3.Coordinates.Y)
             {
-                var temp = p2;
-                p2 = p3;
-                p3 = temp;
+                var temp = v2;
+                v2 = v3;
+                v3 = temp;
             }
 
-            if (p1.Y > p2.Y)
+            if (v1.Coordinates.Y > v2.Coordinates.Y)
             {
-                var temp = p2;
-                p2 = p1;
-                p1 = temp;
+                var temp = v2;
+                v2 = v1;
+                v1 = temp;
             }
+
+            Vector3 p1 = v1.Coordinates;
+            Vector3 p2 = v2.Coordinates;
+            Vector3 p3 = v3.Coordinates;
+
+            Vector3 vnFace = (v1.Normal + v2.Normal + v3.Normal) / 3;
+            Vector3 centerPoint = (v1.WorldCoordinates + v2.WorldCoordinates + v3.WorldCoordinates) / 3;
+            Vector3 lightPos = new Vector3(0, -10, 10);
+            float ndotl = ComputeNDotL(centerPoint, vnFace, lightPos);
+            
+            var data = new ScanLineData { ndotla = ndotl };
 
             float dP1P2, dP1P3;
 
@@ -174,13 +149,15 @@ namespace SoftEngine
             {
                 for (var y = (int) p1.Y; y <= (int) p3.Y; y++)
                 {
+                    data.currentY = y;
+                    
                     if (y < p2.Y)
                     {
-                        ProcessScanLine(y, p1, p3, p1, p2, color);
+                        ProcessScanLine(data, v1, v3, v1, v2, color);
                     }
                     else
                     {
-                        ProcessScanLine(y, p2, p3, p1, p3, color);
+                        ProcessScanLine(data, v1, v3, v2, v3, color);
                     }
                 }
             }   
@@ -188,13 +165,15 @@ namespace SoftEngine
             {
                 for (var y = (int) p1.Y; y <= (int) p3.Y; y++)
                 {
+                    data.currentY = y;
+                    
                     if (y < p2.Y)
                     {
-                        ProcessScanLine(y, p1, p2, p1, p3, color);
+                        ProcessScanLine(data, v1, v2, v1, v3, color);
                     }
                     else
                     {
-                        ProcessScanLine(y, p1, p3, p2, p3, color);
+                        ProcessScanLine(data, v2, v3, v1, v3, color);
                     }
                 }
             }
@@ -219,12 +198,11 @@ namespace SoftEngine
                     var vertexB = mesh.Vertices[face.B];
                     var vertexC = mesh.Vertices[face.C];
 
-                    var pixelA = Project(vertexA, transformMatrix);
-                    var pixelB = Project(vertexB, transformMatrix);
-                    var pixelC = Project(vertexC, transformMatrix);
+                    var pixelA = Project(vertexA, transformMatrix, worldMatrix);
+                    var pixelB = Project(vertexB, transformMatrix, worldMatrix);
+                    var pixelC = Project(vertexC, transformMatrix, worldMatrix);
 
-                    var color = 0.25f + (faceIndex % mesh.Faces.Length) * 0.75f / mesh.Faces.Length;
-                    DrawTriangle(pixelA, pixelB, pixelC, new Color4(color, color, color, 1));
+                    DrawTriangle(pixelA, pixelB, pixelC, Color4.White);
                 });
             }
         }
@@ -269,7 +247,11 @@ namespace SoftEngine
                     var x = (float) verticesArray[index * verticesStep].Value;
                     var y = (float) verticesArray[index * verticesStep + 1].Value;
                     var z = (float) verticesArray[index * verticesStep + 2].Value;
-                    mesh.Vertices[index] = new Vector3(x, y, z);
+                    
+                    var nx = (float) verticesArray[index * verticesStep + 3].Value;
+                    var ny = (float) verticesArray[index * verticesStep + 4].Value;
+                    var nz = (float) verticesArray[index * verticesStep + 5].Value;
+                    mesh.Vertices[index] = new Vertex { Coordinates = new Vector3(x, y, z), Normal = new Vector3(nx, ny, nz)};
                 }
 
                 for (var index = 0; index < facesCount; index++)
@@ -298,10 +280,15 @@ namespace SoftEngine
             return min + (max - min) * Clamp(gradient);
         }
 
-        void ProcessScanLine(int y, Vector3 pa, Vector3 pb, Vector3 pc, Vector3 pd, Color4 color)
+        void ProcessScanLine(ScanLineData data, Vertex va, Vertex vb, Vertex vc, Vertex vd, Color4 color)
         {
-            var gradient1 = pa.Y != pb.Y ? (y - pa.Y) / (pb.Y - pa.Y) : 1;
-            var gradient2 = pc.Y != pd.Y ? (y - pc.Y) / (pd.Y - pc.Y) : 1;
+            Vector3 pa = va.Coordinates;
+            Vector3 pb = vb.Coordinates;
+            Vector3 pc = vc.Coordinates;
+            Vector3 pd = vd.Coordinates;
+            
+            var gradient1 = pa.Y != pb.Y ? (data.currentY - pa.Y) / (pb.Y - pa.Y) : 1;
+            var gradient2 = pc.Y != pd.Y ? (data.currentY - pc.Y) / (pd.Y - pc.Y) : 1;
 
             var sx = (int) Interpolate(pa.X, pb.X, gradient1);
             var ex = (int) Interpolate(pc.X, pd.X, gradient2);
@@ -314,8 +301,19 @@ namespace SoftEngine
                 float gradient = (x - sx) / (float) (ex - sx);
 
                 var z = Interpolate(z1, z2, gradient);
-                DrawPoint(new Vector3(x, y, z), color);
+                var ndotl = data.ndotla;
+                DrawPoint(new Vector3(x, data.currentY, z), new Color4(color.Red * ndotl, color.Green * ndotl, color.Blue * ndotl, color.Alpha));
             }
+        }
+
+        float ComputeNDotL(Vector3 vertex, Vector3 normal, Vector3 lightPosition)
+        {
+            var lightDirection = lightPosition - vertex;
+            
+            normal.Normalize();
+            lightDirection.Normalize();
+            
+            return Math.Max(0, -Vector3.Dot(normal, lightDirection));
         }
     }
 }
