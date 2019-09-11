@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
     <e p="C:\Users\User01\.Rider2019.2\system\extResources" t="IncludeRecursive" />
@@ -12,6 +12,7 @@
         <e p="bin" t="ExcludeRecursive" />
         <e p="Camera.cs" t="Include" />
         <e p="Device.cs" t="Include" />
+        <e p="Face.cs" t="Include" />
         <e p="MainWindow.xaml" t="Include" />
         <e p="MainWindow.xaml.cs" t="Include" />
         <e p="Mesh.cs" t="Include" />
