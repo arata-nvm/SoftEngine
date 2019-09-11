@@ -12,6 +12,7 @@ namespace SoftEngine
     {
         private byte[] backBuffer;
         private readonly float[] depthBuffer;
+        private object[] lockBuffer;
         private WriteableBitmap bmp;
         private readonly int renderWidth;
         private readonly int renderHeight;
@@ -24,6 +25,11 @@ namespace SoftEngine
             
             backBuffer = new byte[bmp.PixelWidth * bmp.PixelHeight * 4];
             depthBuffer = new float[bmp.PixelWidth * bmp.PixelHeight];
+            lockBuffer = new object[renderWidth * renderHeight];
+            for (var i = 0; i < lockBuffer.Length; i++)
+            {
+                lockBuffer[i] = new object();
+            }
         }
 
         public void Clear(byte r, byte g, byte b, byte a)
@@ -44,8 +50,8 @@ namespace SoftEngine
 
         public void Present()
         {
-            var rect = new Int32Rect(0, 0, bmp.PixelWidth, bmp.PixelHeight);
-            bmp.WritePixels(rect, backBuffer, bmp.PixelWidth * 4, 0, 0);
+            var rect = new Int32Rect(0, 0, renderWidth, renderHeight);
+            bmp.WritePixels(rect, backBuffer, renderWidth * 4, 0, 0);
         }
 
         public void PutPixel(int x, int y, float z, Color4 color)
@@ -53,30 +59,33 @@ namespace SoftEngine
             var index = (x + y * renderWidth);
             var index4 = index * 4;
 
-            if (depthBuffer[index] < z)
+            lock (lockBuffer[index])
             {
-                return;
-            }
+                if (depthBuffer[index] < z)
+                {
+                    return;
+                }
 
-            depthBuffer[index] = z;
+                depthBuffer[index] = z;
             
-            backBuffer[index4] = (byte) (color.Blue * 255);
-            backBuffer[index4 + 1] = (byte) (color.Green * 255);
-            backBuffer[index4 + 2] = (byte) (color.Red * 255);
-            backBuffer[index4 + 3] = (byte) (color.Alpha * 255);
+                backBuffer[index4] = (byte) (color.Blue * 255);
+                backBuffer[index4 + 1] = (byte) (color.Green * 255);
+                backBuffer[index4 + 2] = (byte) (color.Red * 255);
+                backBuffer[index4 + 3] = (byte) (color.Alpha * 255);
+            }
         }
 
         public Vector3 Project(Vector3 coord, Matrix transMat)
         {
             var point = Vector3.TransformCoordinate(coord, transMat);
-            var x = point.X * bmp.PixelWidth + bmp.PixelWidth / 2.0f;
-            var y = -point.Y * bmp.PixelHeight + bmp.PixelHeight / 2.0f;
+            var x = point.X * renderWidth + renderWidth / 2.0f;
+            var y = -point.Y * renderHeight + renderHeight / 2.0f;
             return new Vector3(x, y, point.Z);
         }
 
         public void DrawPoint(Vector3 point, Color4 color)
         {
-            if (point.X >= 0 && point.Y >= 0 && point.X < bmp.PixelWidth && point.Y < bmp.PixelHeight)
+            if (point.X >= 0 && point.Y >= 0 && point.X < renderWidth && point.Y < renderHeight)
             {
                 PutPixel((int) point.X, (int) point.Y, point.Z, color);
             }
@@ -120,7 +129,7 @@ namespace SoftEngine
                 if (e2 < dx)
                 {
                     err += dx;
-                    y0 += sy;;
+                    y0 += sy;
                 }
             }
         }
@@ -195,17 +204,17 @@ namespace SoftEngine
         {
             var viewMatrix = Matrix.LookAtLH(camera.Position, camera.Target, Vector3.UnitY);
             var projectionMatrix =
-                Matrix.PerspectiveFovRH(0.78f, (float) bmp.PixelWidth / bmp.PixelHeight, 0.01f, 1.0f);
+                Matrix.PerspectiveFovRH(0.78f, (float) renderWidth / renderHeight, 0.01f, 1.0f);
 
             foreach (var mesh in meshes)
             {
                 var worldMatrix = Matrix.RotationYawPitchRoll(mesh.Rotation.Y, mesh.Rotation.X, mesh.Rotation.Z) *
                                   Matrix.Translation(mesh.Position);
                 var transformMatrix = worldMatrix * viewMatrix * projectionMatrix;
-
-                var faceIndex = 0;
-                foreach (var face in mesh.Faces)
+                
+                Parallel.For(0, mesh.Faces.Length, faceIndex =>
                 {
+                    var face = mesh.Faces[faceIndex];
                     var vertexA = mesh.Vertices[face.A];
                     var vertexB = mesh.Vertices[face.B];
                     var vertexC = mesh.Vertices[face.C];
@@ -216,8 +225,7 @@ namespace SoftEngine
 
                     var color = 0.25f + (faceIndex % mesh.Faces.Length) * 0.75f / mesh.Faces.Length;
                     DrawTriangle(pixelA, pixelB, pixelC, new Color4(color, color, color, 1));
-                    faceIndex++;
-                }
+                });
             }
         }
 

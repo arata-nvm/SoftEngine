@@ -8,7 +8,11 @@
       <change beforePath="$PROJECT_DIR$/SoftEngine/MainWindow.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/MainWindow.xaml.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SoftEngine/bin/Debug/SoftEngine.exe" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/bin/Debug/SoftEngine.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SoftEngine/bin/Debug/SoftEngine.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/bin/Debug/SoftEngine.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SoftEngine/obj/Debug/MainWindow.baml" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/obj/Debug/MainWindow.baml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SoftEngine/obj/Debug/MainWindow.g.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/obj/Debug/MainWindow.g.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SoftEngine/obj/Debug/MainWindow.g.i.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/obj/Debug/MainWindow.g.i.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine.exe" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine.g.resources" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine.g.resources" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine.pdb" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -38,9 +42,9 @@
         <option value="$PROJECT_DIR$/SoftEngine/Camera.cs" />
         <option value="$PROJECT_DIR$/SoftEngine/Face.cs" />
         <option value="$PROJECT_DIR$/SoftEngine/Mesh.cs" />
+        <option value="$PROJECT_DIR$/SoftEngine/MainWindow.xaml.cs" />
         <option value="$PROJECT_DIR$/SoftEngine/Device.cs" />
         <option value="$PROJECT_DIR$/SoftEngine/MainWindow.xaml" />
-        <option value="$PROJECT_DIR$/SoftEngine/MainWindow.xaml.cs" />
       </list>
     </option>
   </component>
@@ -57,6 +61,7 @@
     <property name="Rider.DefaultBreakpoints.AreToggled" value="true" />
     <property name="Rider.ProjectViewActivator.IsNotFirstRun" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -101,7 +106,7 @@
       <option name="presentableId" value="Default" />
       <updated>1568160150266</updated>
       <workItem from="1568160154343" duration="2955000" />
-      <workItem from="1568165540460" duration="13774000" />
+      <workItem from="1568165540460" duration="16486000" />
     </task>
     <servers />
   </component>
@@ -169,6 +174,8 @@
     <state width="916" height="355" key="GridCell.Tab.4.right/1920.1080" />
     <state x="910" y="203" key="Rider.ProjectTemplateDialog.Size" />
     <state x="910" y="203" key="Rider.ProjectTemplateDialog.Size/1920.1080" />
+    <state x="905" y="200" key="SettingsEditor" />
+    <state x="905" y="200" key="SettingsEditor/1920.1080" />
     <state x="1103" y="257" width="672" height="678" key="search.everywhere.popup" />
     <state x="1103" y="257" width="672" height="678" key="search.everywhere.popup/1920.1080" />
   </component>

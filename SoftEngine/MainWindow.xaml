@@ -5,10 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SoftEngine"
         mc:Ignorable="d"
-        Title="MainWindow" Width="640" Height="480">
-    <Grid>
+        Title="MainWindow" Width="960" Height="540">
+    <StackPanel>
+        <Label x:Name="Fps"/>
         <Canvas x:Name="XCanvas">
             <Image VerticalAlignment="Top" Source="{Binding Bmp}"/>
         </Canvas>
-    </Grid>
+    </StackPanel>
 </Window>
