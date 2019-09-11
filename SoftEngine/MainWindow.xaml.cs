@@ -17,7 +17,8 @@ namespace SoftEngine
 
         private Device device;
         private Mesh[] meshes;
-        Camera camera = new Camera();
+        private Camera camera = new Camera();
+        private DateTime previousDate;
 
         public MainWindow()
         {

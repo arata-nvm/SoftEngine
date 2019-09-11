@@ -2,23 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="96a3d42a-e6da-41d1-9d22-fc7cbdd4e844" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/SoftEngine/monkey.babylon" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.SoftEngine/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.SoftEngine/.idea/contentModel.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.SoftEngine/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.SoftEngine/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SoftEngine/Device.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/Device.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SoftEngine/MainWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/MainWindow.xaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SoftEngine/MainWindow.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/MainWindow.xaml.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SoftEngine/SoftEngine.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/SoftEngine.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SoftEngine/bin/Debug/SoftEngine.exe" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/bin/Debug/SoftEngine.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SoftEngine/bin/Debug/SoftEngine.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/bin/Debug/SoftEngine.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SoftEngine/obj/Debug/MainWindow.baml" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/obj/Debug/MainWindow.baml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine.csproj.CoreCompileInputs.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine.csproj.FileListAbsolute.txt" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine.csproj.FileListAbsolute.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine.csprojAssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine.csprojAssemblyReference.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine.exe" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine.g.resources" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine.g.resources" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine_MarkupCompile.cache" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/obj/Debug/SoftEngine_MarkupCompile.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SoftEngine/packages.config" beforeDir="false" afterPath="$PROJECT_DIR$/SoftEngine/packages.config" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -45,11 +36,11 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/SoftEngine/Camera.cs" />
-        <option value="$PROJECT_DIR$/SoftEngine/MainWindow.xaml" />
         <option value="$PROJECT_DIR$/SoftEngine/Face.cs" />
         <option value="$PROJECT_DIR$/SoftEngine/Mesh.cs" />
-        <option value="$PROJECT_DIR$/SoftEngine/MainWindow.xaml.cs" />
         <option value="$PROJECT_DIR$/SoftEngine/Device.cs" />
+        <option value="$PROJECT_DIR$/SoftEngine/MainWindow.xaml" />
+        <option value="$PROJECT_DIR$/SoftEngine/MainWindow.xaml.cs" />
       </list>
     </option>
   </component>
@@ -110,7 +101,7 @@
       <option name="presentableId" value="Default" />
       <updated>1568160150266</updated>
       <workItem from="1568160154343" duration="2955000" />
-      <workItem from="1568165540460" duration="9938000" />
+      <workItem from="1568165540460" duration="13774000" />
     </task>
     <servers />
   </component>
@@ -136,14 +127,14 @@
   <component name="WindowStateProjectService">
     <state x="1125" y="230" key="#Default" />
     <state x="1125" y="230" key="#Default/1920.1080" />
-    <state width="916" height="355" key="GridCell.Tab.0.bottom" />
-    <state width="916" height="355" key="GridCell.Tab.0.bottom/1920.1080" />
-    <state width="916" height="355" key="GridCell.Tab.0.center" />
-    <state width="916" height="355" key="GridCell.Tab.0.center/1920.1080" />
-    <state width="916" height="355" key="GridCell.Tab.0.left" />
-    <state width="916" height="355" key="GridCell.Tab.0.left/1920.1080" />
-    <state width="916" height="355" key="GridCell.Tab.0.right" />
-    <state width="916" height="355" key="GridCell.Tab.0.right/1920.1080" />
+    <state width="916" height="285" key="GridCell.Tab.0.bottom" />
+    <state width="916" height="285" key="GridCell.Tab.0.bottom/1920.1080" />
+    <state width="916" height="285" key="GridCell.Tab.0.center" />
+    <state width="916" height="285" key="GridCell.Tab.0.center/1920.1080" />
+    <state width="916" height="285" key="GridCell.Tab.0.left" />
+    <state width="916" height="285" key="GridCell.Tab.0.left/1920.1080" />
+    <state width="916" height="285" key="GridCell.Tab.0.right" />
+    <state width="916" height="285" key="GridCell.Tab.0.right/1920.1080" />
     <state width="916" height="355" key="GridCell.Tab.1.bottom" />
     <state width="916" height="355" key="GridCell.Tab.1.bottom/1920.1080" />
     <state width="916" height="355" key="GridCell.Tab.1.center" />
@@ -188,19 +179,6 @@
           <properties exception="System.Threading.ThreadAbortException" displayValue="System.Threading.ThreadAbortException" />
           <option name="timeStamp" value="1" />
         </breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/SoftEngine/Device.cs</url>
-          <line>192</line>
-          <properties documentPath="$PROJECT_DIR$/SoftEngine/Device.cs" initialLine="192">
-            <startOffsets>
-              <option value="6890" />
-            </startOffsets>
-            <endOffsets>
-              <option value="6942" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>

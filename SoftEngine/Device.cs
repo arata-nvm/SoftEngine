@@ -11,12 +11,19 @@ namespace SoftEngine
     public class Device
     {
         private byte[] backBuffer;
+        private readonly float[] depthBuffer;
         private WriteableBitmap bmp;
-
+        private readonly int renderWidth;
+        private readonly int renderHeight;
+        
         public Device(WriteableBitmap bmp)
         {
             this.bmp = bmp;
+            renderWidth = bmp.PixelWidth;
+            renderHeight = bmp.PixelHeight;
+            
             backBuffer = new byte[bmp.PixelWidth * bmp.PixelHeight * 4];
+            depthBuffer = new float[bmp.PixelWidth * bmp.PixelHeight];
         }
 
         public void Clear(byte r, byte g, byte b, byte a)
@@ -28,6 +35,11 @@ namespace SoftEngine
                 backBuffer[index + 2] = r;
                 backBuffer[index + 3] = a;
             }
+
+            for (var index = 0; index < depthBuffer.Length; index++)
+            {
+                depthBuffer[index] = float.MaxValue;
+            }
         }
 
         public void Present()
@@ -36,44 +48,53 @@ namespace SoftEngine
             bmp.WritePixels(rect, backBuffer, bmp.PixelWidth * 4, 0, 0);
         }
 
-        public void PutPixel(int x, int y, Color4 color)
+        public void PutPixel(int x, int y, float z, Color4 color)
         {
-            var index = (x + y * bmp.PixelWidth) * 4;
-            backBuffer[index] = (byte) (color.Blue * 255);
-            backBuffer[index + 1] = (byte) (color.Green * 255);
-            backBuffer[index + 2] = (byte) (color.Red * 255);
-            backBuffer[index + 3] = (byte) (color.Alpha * 255);
+            var index = (x + y * renderWidth);
+            var index4 = index * 4;
+
+            if (depthBuffer[index] < z)
+            {
+                return;
+            }
+
+            depthBuffer[index] = z;
+            
+            backBuffer[index4] = (byte) (color.Blue * 255);
+            backBuffer[index4 + 1] = (byte) (color.Green * 255);
+            backBuffer[index4 + 2] = (byte) (color.Red * 255);
+            backBuffer[index4 + 3] = (byte) (color.Alpha * 255);
         }
 
-        public Vector2 Project(Vector3 coord, Matrix transMat)
+        public Vector3 Project(Vector3 coord, Matrix transMat)
         {
             var point = Vector3.TransformCoordinate(coord, transMat);
             var x = point.X * bmp.PixelWidth + bmp.PixelWidth / 2.0f;
             var y = -point.Y * bmp.PixelHeight + bmp.PixelHeight / 2.0f;
-            return new Vector2(x, y);
+            return new Vector3(x, y, point.Z);
         }
 
-        public void DrawPoint(Vector2 point)
+        public void DrawPoint(Vector3 point, Color4 color)
         {
             if (point.X >= 0 && point.Y >= 0 && point.X < bmp.PixelWidth && point.Y < bmp.PixelHeight)
             {
-                PutPixel((int) point.X, (int) point.Y, new Color4(1.0f, 1.0f, 1.0f, 1.0f));
+                PutPixel((int) point.X, (int) point.Y, point.Z, color);
             }
         }
-
-        public void DrawLine(Vector2 point0, Vector2 point1)
+        
+/*        public void DrawLine(Vector2 point0, Vector2 point1, Color4 color)
         {
             var dist = (point1 - point0).Length();
 
             if (dist < 2) return;
 
             Vector2 middlePoint = point0 + (point1 - point0) / 2;
-            DrawPoint(middlePoint);
-            DrawLine(point0, middlePoint);
-            DrawLine(middlePoint, point1);
+            DrawPoint(middlePoint, color);
+            DrawLine(point0, middlePoint, color);
+            DrawLine(middlePoint, point1, color);
         }
 
-        public void DrawBline(Vector2 point0, Vector2 point1)
+        public void DrawBline(Vector2 point0, Vector2 point1, Color4 color)
         {
             int x0 = (int) point0.X;
             int y0 = (int) point0.Y;
@@ -88,7 +109,7 @@ namespace SoftEngine
 
             while (true)
             {
-                DrawPoint(new Vector2(x0, y0));
+                DrawPoint(new Vector2(x0, y0), color);
                 if ((x0 == x1) && (y0 == y1)) break;
                 var e2 = 2 * err;
                 if (e2 > -dx)
@@ -100,6 +121,72 @@ namespace SoftEngine
                 {
                     err += dx;
                     y0 += sy;;
+                }
+            }
+        }
+*/
+
+        public void DrawTriangle(Vector3 p1, Vector3 p2, Vector3 p3, Color4 color)
+        {
+            if (p1.Y > p2.Y)
+            {
+                var temp = p2;
+                p2 = p1;
+                p1 = temp;
+            }
+
+            if (p2.Y > p3.Y)
+            {
+                var temp = p2;
+                p2 = p3;
+                p3 = temp;
+            }
+
+            if (p1.Y > p2.Y)
+            {
+                var temp = p2;
+                p2 = p1;
+                p1 = temp;
+            }
+
+            float dP1P2, dP1P3;
+
+            if (p2.Y - p1.Y > 0)
+                dP1P2 = (p2.X - p1.X) / (p2.Y - p1.Y);
+            else
+                dP1P2 = 0;
+
+            if (p3.Y - p1.Y > 0)
+                dP1P3 = (p3.X - p1.X) / (p3.Y - p1.Y);
+            else
+                dP1P3 = 0;
+
+            if (dP1P2 > dP1P3)
+            {
+                for (var y = (int) p1.Y; y <= (int) p3.Y; y++)
+                {
+                    if (y < p2.Y)
+                    {
+                        ProcessScanLine(y, p1, p3, p1, p2, color);
+                    }
+                    else
+                    {
+                        ProcessScanLine(y, p2, p3, p1, p3, color);
+                    }
+                }
+            }   
+            else
+            {
+                for (var y = (int) p1.Y; y <= (int) p3.Y; y++)
+                {
+                    if (y < p2.Y)
+                    {
+                        ProcessScanLine(y, p1, p2, p1, p3, color);
+                    }
+                    else
+                    {
+                        ProcessScanLine(y, p1, p3, p2, p3, color);
+                    }
                 }
             }
         }
@@ -116,12 +203,7 @@ namespace SoftEngine
                                   Matrix.Translation(mesh.Position);
                 var transformMatrix = worldMatrix * viewMatrix * projectionMatrix;
 
-                foreach (var vertex in mesh.Vertices)
-                {
-                    var point = Project(vertex, transformMatrix);
-                    DrawPoint(point);
-                }
-
+                var faceIndex = 0;
                 foreach (var face in mesh.Faces)
                 {
                     var vertexA = mesh.Vertices[face.A];
@@ -131,10 +213,10 @@ namespace SoftEngine
                     var pixelA = Project(vertexA, transformMatrix);
                     var pixelB = Project(vertexB, transformMatrix);
                     var pixelC = Project(vertexC, transformMatrix);
-                    
-                    DrawBline(pixelA, pixelB);
-                    DrawBline(pixelB, pixelC);
-                    DrawBline(pixelC, pixelA);
+
+                    var color = 0.25f + (faceIndex % mesh.Faces.Length) * 0.75f / mesh.Faces.Length;
+                    DrawTriangle(pixelA, pixelB, pixelC, new Color4(color, color, color, 1));
+                    faceIndex++;
                 }
             }
         }
@@ -196,6 +278,36 @@ namespace SoftEngine
             }
 
             return meshes.ToArray();
+        }
+
+        float Clamp(float value, float min = 0, float max = 1)
+        {
+            return Math.Max(min, Math.Min(value, max));
+        }
+
+        float Interpolate(float min, float max, float gradient)
+        {
+            return min + (max - min) * Clamp(gradient);
+        }
+
+        void ProcessScanLine(int y, Vector3 pa, Vector3 pb, Vector3 pc, Vector3 pd, Color4 color)
+        {
+            var gradient1 = pa.Y != pb.Y ? (y - pa.Y) / (pb.Y - pa.Y) : 1;
+            var gradient2 = pc.Y != pd.Y ? (y - pc.Y) / (pd.Y - pc.Y) : 1;
+
+            var sx = (int) Interpolate(pa.X, pb.X, gradient1);
+            var ex = (int) Interpolate(pc.X, pd.X, gradient2);
+
+            float z1 = Interpolate(pa.Z, pb.Z, gradient1);
+            float z2 = Interpolate(pc.Z, pd.Z, gradient2);
+
+            for (var x = sx; x < ex; x++)
+            {
+                float gradient = (x - sx) / (float) (ex - sx);
+
+                var z = Interpolate(z1, z2, gradient);
+                DrawPoint(new Vector3(x, y, z), color);
+            }
         }
     }
 }
