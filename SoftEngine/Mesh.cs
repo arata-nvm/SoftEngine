@@ -1,4 +1,5 @@
-﻿using SharpDX;
+﻿using System.Threading.Tasks;
+using SharpDX;
 
 namespace SoftEngine
 {
@@ -16,6 +17,20 @@ namespace SoftEngine
             Vertices = new Vertex[verticesCount];
             Faces = new Face[facesCount];
             Name = name;
+        }
+
+        public void ComputeFacesNormal()
+        {
+            Parallel.For(0, Faces.Length, faceIndex =>
+            {
+                var face = Faces[faceIndex];
+                var vertexA = Vertices[face.A];
+                var vertexB = Vertices[face.B];
+                var vertexC = Vertices[face.C];
+
+                Faces[faceIndex].Normal = (vertexA.Normal + vertexB.Normal + vertexC.Normal);
+                Faces[faceIndex].Normal.Normalize();
+            });
         }
     }
 }

@@ -251,11 +251,20 @@ namespace SoftEngine
             {
                 var worldMatrix = Matrix.RotationYawPitchRoll(mesh.Rotation.Y, mesh.Rotation.X, mesh.Rotation.Z) *
                                   Matrix.Translation(mesh.Position);
+                var worldView = worldMatrix * viewMatrix;
                 var transformMatrix = worldMatrix * viewMatrix * projectionMatrix;
                 
                 Parallel.For(0, mesh.Faces.Length, faceIndex =>
                 {
                     var face = mesh.Faces[faceIndex];
+
+                    var transformedNormal = Vector3.TransformNormal(face.Normal, worldView);
+
+                    if (transformedNormal.Z < 0)
+                    {
+                        return;
+                    }
+                    
                     var vertexA = mesh.Vertices[face.A];
                     var vertexB = mesh.Vertices[face.B];
                     var vertexC = mesh.Vertices[face.C];
@@ -356,6 +365,8 @@ namespace SoftEngine
                     var meshTextureName = materials[meshTextureID].DiffuseTextureName;
                     mesh.Texture = new Texture(meshTextureName, 512, 512);
                 }
+                
+                mesh.ComputeFacesNormal();
                 
                 meshes.Add(mesh);
             }
