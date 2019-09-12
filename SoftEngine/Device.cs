@@ -87,7 +87,8 @@ namespace SoftEngine
             {
                 Coordinates =  new Vector3(x, y, point2d.Z),
                 Normal = normal3dWorld,
-                WorldCoordinates = point3dWorld
+                WorldCoordinates = point3dWorld,
+                TextureCoordinates = vertex.TextureCoordinates
             };
         }
 
@@ -99,7 +100,7 @@ namespace SoftEngine
             }
         }
 
-        public void DrawTriangle(Vertex v1, Vertex v2, Vertex v3, Color4 color)
+        public void DrawTriangle(Vertex v1, Vertex v2, Vertex v3, Color4 color, Texture texture)
         {
             if (v1.Coordinates.Y > v2.Coordinates.Y)
             {
@@ -127,6 +128,7 @@ namespace SoftEngine
             Vector3 p3 = v3.Coordinates;
 
             Vector3 lightPos = new Vector3(0, -10, 10);
+            
             float nl1 = ComputeNDotL(v1.WorldCoordinates, v1.Normal, lightPos);
             float nl2 = ComputeNDotL(v2.WorldCoordinates, v2.Normal, lightPos);
             float nl3 = ComputeNDotL(v3.WorldCoordinates, v3.Normal, lightPos);
@@ -157,7 +159,18 @@ namespace SoftEngine
                         data.ndotlb = nl3;
                         data.ndotlc = nl1;
                         data.ndotld = nl2;
-                        ProcessScanLine(data, v1, v3, v1, v2, color);
+                        
+                        data.ua = v1.TextureCoordinates.X;
+                        data.ub = v3.TextureCoordinates.X;
+                        data.uc = v1.TextureCoordinates.X;
+                        data.ud = v2.TextureCoordinates.X;
+
+                        data.va = v1.TextureCoordinates.Y;
+                        data.vb = v3.TextureCoordinates.Y;
+                        data.vc = v1.TextureCoordinates.Y;
+                        data.vd = v2.TextureCoordinates.Y;
+                        
+                        ProcessScanLine(data, v1, v3, v1, v2, color, texture);
                     }
                     else
                     {
@@ -165,7 +178,18 @@ namespace SoftEngine
                         data.ndotlb = nl3;
                         data.ndotlc = nl2;
                         data.ndotld = nl3;
-                        ProcessScanLine(data, v1, v3, v2, v3, color);
+                        
+                        data.ua = v1.TextureCoordinates.X;
+                        data.ub = v3.TextureCoordinates.X;
+                        data.uc = v2.TextureCoordinates.X;
+                        data.ud = v3.TextureCoordinates.X;
+
+                        data.va = v1.TextureCoordinates.Y;
+                        data.vb = v3.TextureCoordinates.Y;
+                        data.vc = v2.TextureCoordinates.Y;
+                        data.vd = v3.TextureCoordinates.Y;
+                        
+                        ProcessScanLine(data, v1, v3, v2, v3, color, texture);
                     }
                 }
             }   
@@ -181,7 +205,18 @@ namespace SoftEngine
                         data.ndotlb = nl2;
                         data.ndotlc = nl1;
                         data.ndotld = nl3;
-                        ProcessScanLine(data, v1, v2, v1, v3, color);
+                        
+                        data.ua = v1.TextureCoordinates.X;
+                        data.ub = v2.TextureCoordinates.X;
+                        data.uc = v1.TextureCoordinates.X;
+                        data.ud = v3.TextureCoordinates.X;
+
+                        data.va = v1.TextureCoordinates.Y;
+                        data.vb = v2.TextureCoordinates.Y;
+                        data.vc = v1.TextureCoordinates.Y;
+                        data.vd = v3.TextureCoordinates.Y;
+                        
+                        ProcessScanLine(data, v1, v2, v1, v3, color, texture);
                     }
                     else
                     {
@@ -189,7 +224,18 @@ namespace SoftEngine
                         data.ndotlb = nl3;
                         data.ndotlc = nl1;
                         data.ndotld = nl3;
-                        ProcessScanLine(data, v2, v3, v1, v3, color);
+                        
+                        data.ua = v2.TextureCoordinates.X;
+                        data.ub = v3.TextureCoordinates.X;
+                        data.uc = v1.TextureCoordinates.X;
+                        data.ud = v3.TextureCoordinates.X;
+
+                        data.va = v2.TextureCoordinates.Y;
+                        data.vb = v3.TextureCoordinates.Y;
+                        data.vc = v1.TextureCoordinates.Y;
+                        data.vd = v3.TextureCoordinates.Y;
+                        
+                        ProcessScanLine(data, v2, v3, v1, v3, color, texture);
                     }
                 }
             }
@@ -218,7 +264,7 @@ namespace SoftEngine
                     var pixelB = Project(vertexB, transformMatrix, worldMatrix);
                     var pixelC = Project(vertexC, transformMatrix, worldMatrix);
 
-                    DrawTriangle(pixelA, pixelB, pixelC, Color4.White);
+                    DrawTriangle(pixelA, pixelB, pixelC, Color4.White, mesh.Texture);
                 });
             }
         }
@@ -226,13 +272,26 @@ namespace SoftEngine
         public async Task<Mesh[]> LoadJsonFileAsync(string fileName)
         {
             var meshes = new List<Mesh>();
+            var materials = new Dictionary<String, Material>();
             var data = "";
             using (var reader = new StreamReader(fileName))
             {
                 data = await reader.ReadToEndAsync();
             }
-
             dynamic jsonObject = Newtonsoft.Json.JsonConvert.DeserializeObject(data);
+
+
+            for (var materialIndex = 0; materialIndex < jsonObject.materials.Count; materialIndex++)
+            {
+                var material = new Material();
+                material.Name = jsonObject.materials[materialIndex].name.Value;
+                material.ID = jsonObject.materials[materialIndex].id.Value;
+                if (jsonObject.materials[materialIndex].diffuseTexture != null)
+                    material.DiffuseTextureName = jsonObject.materials[materialIndex].diffuseTexture.name.Value;
+                
+                materials.Add(material.ID, material);
+            }
+
             for (var meshIndex = 0; meshIndex < jsonObject.meshes.Count; meshIndex++)
             {
                 var verticesArray = jsonObject.meshes[meshIndex].vertices;
@@ -267,7 +326,17 @@ namespace SoftEngine
                     var nx = (float) verticesArray[index * verticesStep + 3].Value;
                     var ny = (float) verticesArray[index * verticesStep + 4].Value;
                     var nz = (float) verticesArray[index * verticesStep + 5].Value;
-                    mesh.Vertices[index] = new Vertex { Coordinates = new Vector3(x, y, z), Normal = new Vector3(nx, ny, nz)};
+                    mesh.Vertices[index] = new Vertex
+                    {
+                        Coordinates = new Vector3(x, y, z),
+                        Normal = new Vector3(nx, ny, nz)
+                    };
+                    if (uvCount > 0)
+                    {
+                        var u = (float) verticesArray[index * verticesStep + 6].Value;
+                        var v = (float) verticesArray[index * verticesStep + 7].Value;
+                        mesh.Vertices[index].TextureCoordinates = new Vector2(u, v);
+                    }
                 }
 
                 for (var index = 0; index < facesCount; index++)
@@ -280,6 +349,14 @@ namespace SoftEngine
 
                 var position = jsonObject.meshes[meshIndex].position;
                 mesh.Position = new Vector3((float) position[0].Value, (float) position[1].Value, (float) position[2].Value);
+
+                if (uvCount > 0)
+                {
+                    var meshTextureID = jsonObject.meshes[meshIndex].materialId.Value;
+                    var meshTextureName = materials[meshTextureID].DiffuseTextureName;
+                    mesh.Texture = new Texture(meshTextureName, 512, 512);
+                }
+                
                 meshes.Add(mesh);
             }
 
@@ -296,7 +373,7 @@ namespace SoftEngine
             return min + (max - min) * Clamp(gradient);
         }
 
-        void ProcessScanLine(ScanLineData data, Vertex va, Vertex vb, Vertex vc, Vertex vd, Color4 color)
+        void ProcessScanLine(ScanLineData data, Vertex va, Vertex vb, Vertex vc, Vertex vd, Color4 color, Texture texture)
         {
             Vector3 pa = va.Coordinates;
             Vector3 pb = vb.Coordinates;
@@ -315,13 +392,32 @@ namespace SoftEngine
             var snl = Interpolate(data.ndotla, data.ndotlb, gradient1);
             var enl = Interpolate(data.ndotlc, data.ndotld, gradient2);
 
+            var su = Interpolate(data.ua, data.ub, gradient1);
+            var eu = Interpolate(data.uc, data.ud, gradient2);
+            var sv = Interpolate(data.va, data.vb, gradient1);
+            var ev = Interpolate(data.vc, data.vd, gradient2);
+            
             for (var x = sx; x < ex; x++)
             {
                 float gradient = (x - sx) / (float) (ex - sx);
 
                 var z = Interpolate(z1, z2, gradient);
                 var ndotl = Interpolate(snl, enl, gradient);
-                DrawPoint(new Vector3(x, data.currentY, z), new Color4(color.Red * ndotl, color.Green * ndotl, color.Blue * ndotl, color.Alpha));
+                var u = Interpolate(su, eu, gradient);
+                var v = Interpolate(sv, ev, gradient);
+
+                Color4 textureColor;
+
+                if (texture != null)
+                {
+                    textureColor = texture.Map(u, v);
+                }
+                else
+                {
+                    textureColor = Color4.White;
+                }
+                
+                DrawPoint(new Vector3(x, data.currentY, z), new Color4(color.Red * ndotl, color.Green * ndotl, color.Blue * ndotl, color.Alpha) * textureColor);
             }
         }
 
